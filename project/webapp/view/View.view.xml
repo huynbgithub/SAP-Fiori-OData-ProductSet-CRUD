@@ -1,0 +1,203 @@
+<mvc:View
+    xmlns:core="sap.ui.core"
+    xmlns:smartfilterbar="sap.ui.comp.smartfilterbar"
+    xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+    controllerName="project.project.controller.View"
+    xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
+    xmlns="sap.m"
+    xmlns:smarttable="sap.ui.comp.smarttable"
+>
+    <Shell>
+        <App
+            backgroundColor=""
+            backgroundImage=""
+            backgroundOpacity="1"
+            backgroundRepeat="false"
+            homeIcon=""
+            mobileWebAppCapable="true"
+            autoFocus="true"
+        >
+            <pages>
+                <Page
+                    id="page"
+                    title="{i18n>title}"
+                >
+                    <content>
+                        <smartfilterbar:SmartFilterBar
+                            id="idSmartFilterBar"
+                            entitySet="ProductSet"
+                        >
+                            <smartfilterbar:controlConfiguration>
+                                <smartfilterbar:ControlConfiguration
+                                    id="idProductID"
+                                    visibleInAdvancedArea="true"
+                                    label="Product ID"
+                                    key="ProductID"
+                                />
+                                <smartfilterbar:ControlConfiguration
+                                    id="idCategory"
+                                    visibleInAdvancedArea="true"
+                                    label="Category"
+                                    key="Category"
+                                />
+                                <smartfilterbar:ControlConfiguration
+                                    id="idCurrencyCode"
+                                    visibleInAdvancedArea="true"
+                                    label="Currency Code"
+                                    key="CurrencyCode"
+                                />
+                            </smartfilterbar:controlConfiguration>
+                        </smartfilterbar:SmartFilterBar>
+                        <smarttable:SmartTable
+                            id="idSmartTable"
+                            smartFilterId="idSmartFilterBar"
+                            tableType="ResponsiveTable"
+                            entitySet="ProductSet"
+                            useVariantManagement="false"
+                            app:useSmartToggle="true"
+                            useTablePersonalisation="true"
+                            header="Products"
+                            showRowCount="true"
+                            showTablePersonalisation="false"
+                            fieldChange="onChange"
+                            initiallyVisibleFields="ProductID,TypeCode,SupplierID,CurrencyCode,Name,Category,Price,TaxTarifCode,MeasureUnit"
+                            editable="false"
+                            editTogglable="false"
+                            demandPopin="true"
+                            enableAutoBinding="true"
+                            customToolbar="onCustomToolbar"
+                            useExportToExcel="false"
+                        >
+                        <Table
+                                id="idResponsiveTable"
+                                mode="MultiSelect"
+                            >
+                                <columns>
+                                    <Column width="3%">
+                                        <customData>
+                                            <core:CustomData
+                                                key="p13nData"
+                                                value="{
+                                                    columnKey: 'Status',
+                                                    columnIndex: 0
+                                                }"
+                                            />
+                                        </customData>
+                                        <core:Icon
+                                            activeBackgroundColor=""
+                                            activeColor=""
+                                            alt=""
+                                            backgroundColor=""
+                                            color=""
+                                            decorative="true"
+                                            height=""
+                                            hoverBackgroundColor=""
+                                            hoverColor=""
+                                            noTabStop="false"
+                                            size=""
+                                            src="sap-icon://edit"
+                                            useIconTooltip="true"
+                                            width=""
+                                        >
+                                            
+                                        </core:Icon>
+                                    </Column>
+                                    <Column>
+                                        <customData>
+                                            <core:CustomData
+                                                key="p13nData"
+                                                value="{
+                                                    columnKey: 'ProductID',
+                                                    leadingProperty: 'ProductID',
+                                                    columnIndex: 1
+                                                }"
+                                            />
+                                        </customData>
+                                        <Text text="Product ID" />
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem vAlign="Inherit">
+                                        <cells>
+                                            <core:Icon
+                                                activeBackgroundColor=""
+                                                activeColor=""
+                                                alt=""
+                                                backgroundColor=""
+                                                color=""
+                                                decorative="true"
+                                                height=""
+                                                hoverBackgroundColor=""
+                                                hoverColor=""
+                                                noTabStop="false"
+                                                size=""
+                                                src=""
+                                                useIconTooltip="true"
+                                                width=""
+                                            >
+                                            </core:Icon>
+                                            <Text text="{ProductID}" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+
+                            <smarttable:customToolbar>
+                                <OverflowToolbar id="idSmartTableToolbar">
+                                    <ToolbarSpacer />
+                                    <Toolbar
+                                        id="idToolBarBox"
+                                        visible="false"
+                                    >
+                                        <GenericTag
+                                            id="idGenericTag"
+                                            text="Not Updated"
+                                            status="Success"
+                                        />
+                                        <Button
+                                            text="Reset"
+                                            type="Transparent"
+                                            press="onReset"
+                                            icon="sap-icon://reset"
+                                        />
+                                        <Button
+                                            text="Add"
+                                            type="Transparent"
+                                            press="onAdd"
+                                            icon="sap-icon://add-activity"
+                                        />
+                                        <Button
+                                            text="Remove"
+                                            type="Reject"
+                                            press="onDelete"
+                                            icon="sap-icon://delete"
+                                        />
+                                    </Toolbar>
+                                    <Label text="Edit Mode" />
+                                    <Switch
+                                        state="false"
+                                        change="onEditModeSwitch"
+                                    />
+                                    <Toolbar
+                                        id="idToolBarBox2"
+                                        visible="false"
+                                    >
+                                    <ToolbarSeparator
+                                    >
+                                    </ToolbarSeparator>
+                                        <Button
+                                            text="Send"
+                                            type="Ghost"
+                                            press="onSend"
+                                        />
+                                    </Toolbar>
+                                </OverflowToolbar>
+                            </smarttable:customToolbar>
+                        </smarttable:SmartTable>
+                    </content>
+                </Page>
+            </pages>
+        </App>
+    </Shell>
+</mvc:View>
