@@ -8,7 +8,9 @@
     xmlns="sap.m"
     xmlns:smarttable="sap.ui.comp.smarttable"
 >
+<!-- Shell: Main container for the app -->
     <Shell>
+    <!-- App: Container for pages -->
         <App
             backgroundColor=""
             backgroundImage=""
@@ -18,29 +20,36 @@
             mobileWebAppCapable="true"
             autoFocus="true"
         >
+        <!-- pages: Contains individual pages -->
             <pages>
+            <!-- content: Main content area of the page -->
                 <Page
                     id="page"
                     title="{i18n>title}"
                 >
                     <content>
+                     <!-- SmartFilterBar: Provides filter options for the SmartTable -->
                         <smartfilterbar:SmartFilterBar
                             id="idSmartFilterBar"
                             entitySet="ProductSet"
                         >
+                         <!-- controlConfiguration: Configuration for filter controls -->
                             <smartfilterbar:controlConfiguration>
+                            <!-- ControlConfiguration for Product ID -->
                                 <smartfilterbar:ControlConfiguration
                                     id="idProductID"
                                     visibleInAdvancedArea="true"
                                     label="Product ID"
                                     key="ProductID"
                                 />
+                                <!-- ControlConfiguration for Category -->
                                 <smartfilterbar:ControlConfiguration
                                     id="idCategory"
                                     visibleInAdvancedArea="true"
                                     label="Category"
                                     key="Category"
                                 />
+                                <!-- ControlConfiguration for Currency Code -->
                                 <smartfilterbar:ControlConfiguration
                                     id="idCurrencyCode"
                                     visibleInAdvancedArea="true"
@@ -49,6 +58,8 @@
                                 />
                             </smartfilterbar:controlConfiguration>
                         </smartfilterbar:SmartFilterBar>
+
+                        <!-- SmartTable: Represents a table with smart features -->
                         <smarttable:SmartTable
                             id="idSmartTable"
                             smartFilterId="idSmartFilterBar"
@@ -69,11 +80,15 @@
                             customToolbar="onCustomToolbar"
                             useExportToExcel="false"
                         >
+
+                        <!-- Table: Custom data inside SmartTable -->
                         <Table
                                 id="idResponsiveTable"
                                 mode="MultiSelect"
                             >
+                            <!-- columns: Define table columns -->
                                 <columns>
+                                <!-- Column for Status -->
                                     <Column width="3%">
                                         <customData>
                                             <core:CustomData
@@ -93,6 +108,7 @@
                                             
                                         </core:Icon>
                                     </Column>
+                                    <!-- Column for Product ID -->
                                     <Column>
                                         <customData>
                                             <core:CustomData
@@ -106,6 +122,7 @@
                                         </customData>
                                         <Text text="Product ID" />
                                     </Column>
+                                    <!-- Column custom for Supplier ComboBox -->
                                     <Column>
                                         <customData>
                                             <core:CustomData
@@ -120,9 +137,12 @@
                                         <Text text="Supplier Name" />
                                     </Column>
                                 </columns>
+                                 <!-- items: Define table rows -->
                                 <items>
                                     <ColumnListItem vAlign="Inherit">
                                         <cells>
+
+                                        <!-- Icon Status cell -->
                                             <core:Icon
                                                 activeBackgroundColor=""
                                                 activeColor=""
@@ -140,7 +160,11 @@
                                                 width=""
                                             >
                                             </core:Icon>
+
+                                            <!-- Text cell for uneditable Product ID -->
                                             <Text text="{ProductID}" />
+
+                                            <!-- ComboBox cell for Supplier ID -->
                                             <ComboBox
                                                 items="{/BusinessPartnerSet}"
                                                 selectedKey="{SupplierID}"
@@ -159,6 +183,7 @@
                                 </items>
                             </Table>
 
+<!-- customToolbar: Define a custom toolbar for SmartTable -->
                             <smarttable:customToolbar>
                                 <OverflowToolbar id="idSmartTableToolbar">
                                     <ToolbarSpacer />
@@ -166,23 +191,27 @@
                                         id="idToolBarBox"
                                         visible="false"
                                     >
+                                    <!-- GenericTag for displaying status -->
                                         <GenericTag
                                             id="idGenericTag"
                                             text="Not Updated"
                                             status="Success"
                                         />
+                                        <!-- Reset button -->
                                         <Button
                                             text="Reset"
                                             type="Transparent"
                                             press="onReset"
                                             icon="sap-icon://reset"
                                         />
+                                        <!-- Add button -->
                                         <Button
                                             text="Add"
                                             type="Transparent"
                                             press="onAdd"
                                             icon="sap-icon://add-activity"
                                         />
+                                        <!-- Remove button -->
                                         <Button
                                             text="Remove"
                                             type="Reject"
@@ -190,11 +219,15 @@
                                             icon="sap-icon://delete"
                                         />
                                     </Toolbar>
+
+                                    <!-- Label and Switch for edit mode -->
                                     <Label text="Edit Mode" />
                                     <Switch
                                         state="false"
                                         change="onEditModeSwitch"
                                     />
+
+                                    <!-- Second Toolbar with separator and Send button -->
                                     <Toolbar
                                         id="idSecondToolBarBox"
                                         visible="false"
