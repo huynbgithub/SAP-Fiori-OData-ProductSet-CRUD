@@ -85,20 +85,10 @@
                                             />
                                         </customData>
                                         <core:Icon
-                                            activeBackgroundColor=""
-                                            activeColor=""
-                                            alt=""
-                                            backgroundColor=""
-                                            color=""
                                             decorative="true"
-                                            height=""
-                                            hoverBackgroundColor=""
-                                            hoverColor=""
                                             noTabStop="false"
-                                            size=""
                                             src="sap-icon://edit"
                                             useIconTooltip="true"
-                                            width=""
                                         >
                                             
                                         </core:Icon>
@@ -115,6 +105,19 @@
                                             />
                                         </customData>
                                         <Text text="Product ID" />
+                                    </Column>
+                                    <Column>
+                                        <customData>
+                                            <core:CustomData
+                                                key="p13nData"
+                                                value="{
+                                                    columnKey: 'SupplierID',
+                                                    leadingProperty: 'SupplierID',
+                                                    columnIndex: 3
+                                                }"
+                                            />
+                                        </customData>
+                                        <Text text="Supplier Name" />
                                     </Column>
                                 </columns>
                                 <items>
@@ -138,6 +141,19 @@
                                             >
                                             </core:Icon>
                                             <Text text="{ProductID}" />
+                                            <ComboBox
+                                                items="{/BusinessPartnerSet}"
+                                                selectedKey="{SupplierID}"
+                                                selectionChange="onComboBoxChange"
+                                                enabled="{comboBoxView>/editable}"
+                                            >
+                                                <items>
+                                                    <core:Item
+                                                        key="{BusinessPartnerID}"
+                                                        text="{CompanyName}"
+                                                    />
+                                                </items>
+                                            </ComboBox>
                                         </cells>
                                     </ColumnListItem>
                                 </items>
@@ -180,12 +196,12 @@
                                         change="onEditModeSwitch"
                                     />
                                     <Toolbar
-                                        id="idToolBarBox2"
+                                        id="idSecondToolBarBox"
                                         visible="false"
                                     >
-                                    <ToolbarSeparator
-                                    >
-                                    </ToolbarSeparator>
+                                        <ToolbarSeparator
+                                        >
+                                        </ToolbarSeparator>
                                         <Button
                                             text="Send"
                                             type="Ghost"
