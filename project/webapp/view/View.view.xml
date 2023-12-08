@@ -83,8 +83,7 @@
 
                         <!-- Table: Custom data inside SmartTable -->
                         <Table
-                                id="idResponsiveTable"
-                                mode="MultiSelect"
+                                id="idResponsiveTable"                                
                             >
                             <!-- columns: Define table columns -->
                                 <columns>

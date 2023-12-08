@@ -25,47 +25,56 @@ sap.ui.define([
         return Controller.extend("project.project.controller.View", {
             // Initialization function
             onInit: function () {
+                this.oView = this.getView();
+                this.oTable = this.getView().byId("idResponsiveTable");
+                this.oSmartTable = this.getView().byId("idSmartTable");
+
                 //Create editable mode model for combo box when switching UI edit mode
                 var comboBoxView = new JSONModel({
                     editable: false
                 });
-                this.getView().setModel(comboBoxView, "comboBoxView");
+                this.oView.setModel(comboBoxView, "comboBoxView");
+
+                //--addItems[] is an array for temporarily saving added items on user interface (UI)--//
+                this.addItems = [];
+
+                //--deletedIDList[] is an array for temporarily saving ids of deleted items on user interface (UI)--//
+                this.deletedIDList = [];
             },
 
             /**
              * @override
-             */
             // Before rendering function
+             * 
+             */
             onBeforeRendering: function () {
                 //The model and the user interface are synchronized
-                this.getView().byId('idSmartTable').getModel().setDefaultBindingMode(BindingMode.TwoWay);
+                this.oSmartTable.getModel().setDefaultBindingMode(BindingMode.TwoWay);
             },
 
             // Switch event handler for toggling edit mode
             onEditModeSwitch: function (oEvent) {
                 var oSwitch = oEvent.getSource();
                 var oEditMode = oSwitch.getState();
-                var oSmartTable = this.getView().byId("idSmartTable");
-                var oToolBar = this.getView().byId("idToolBarBox");
-                var oSecondToolBar = this.getView().byId("idSecondToolBarBox");
+                var oToolBar = this.oView.byId("idToolBarBox");
+                var oSecondToolBar = this.oView.byId("idSecondToolBarBox");
 
                 if (oEditMode) {
                     // Enable edit mode
-                    oSmartTable.setEditable(true);
+                    this.oSmartTable.setEditable(true);
+                    this.oTable.setMode("MultiSelect");
                     oToolBar.setVisible(true);
                     oSecondToolBar.setVisible(true);
-                    this.getView().getModel("comboBoxView").setProperty("/editable", true);
+                    this.oView.getModel("comboBoxView").setProperty("/editable", true);
                 } else {
                     // Disable edit mode
-                    oSmartTable.setEditable(false);
+                    this.oSmartTable.setEditable(false);
+                    this.oTable.setMode("None");
                     oToolBar.setVisible(false);
                     oSecondToolBar.setVisible(false);
-                    this.getView().getModel("comboBoxView").setProperty("/editable", false);
+                    this.oView.getModel("comboBoxView").setProperty("/editable", false);
                 }
             },
-
-            //--addItems[] is an array for temporarily saving added items on user interface (UI)--//
-            addItems: [],
 
             // Event handler for adding a new row on UI
             onAdd: function () {
@@ -80,7 +89,6 @@ sap.ui.define([
                             new Input({ value: "", liveChange: "onLiveChange", position: 1 }),
                             new Input({ value: "", liveChange: "onLiveChange", position: 2 }),
                             new ComboBox({
-                                id: "newComboBox",
                                 selectionChange: "onComboBoxChange",
                                 items: {
                                     path: "/BusinessPartnerSet",
@@ -97,8 +105,7 @@ sap.ui.define([
                         ],
                     }
                 );
-                var oTable = this.getView().byId("idResponsiveTable")
-                oTable.insertItem(oNew, 0);
+                this.oTable.insertItem(oNew, 0);
                 //Add this row into addItems[] array for sending to OData later
                 this.addItems.push(oNew);
             },
@@ -124,9 +131,8 @@ sap.ui.define([
                 }
 
                 //Showing edit icon status when select new Supplier Name in ComboBox
-                var oTable = this.getView().byId("idResponsiveTable");
-                oTable.getItems()[oChangedRowId].getCells()[0].setSrc("sap-icon://edit");
-                oTable.getItems()[oChangedRowId].getCells()[0].setColor("blue");
+                this.oTable.getItems()[oChangedRowId].getCells()[0].setSrc("sap-icon://edit");
+                this.oTable.getItems()[oChangedRowId].getCells()[0].setColor("blue");
 
 
                 //Console log the supplier id for testing when combo box changed
@@ -134,15 +140,10 @@ sap.ui.define([
                 console.log(supplierIdAfterChanged);
             },
 
-            //--deletedIDList[] is an array for temporarily saving ids of deleted items on user interface (UI)--//
-            deletedIDList: [],
-
             // Event handler for selecting rows for deletion and showing deletion icon on UI
             onDelete: function () {
-                var oTable = this.getView().byId("idResponsiveTable");
-
                 //Get products selected by users on UI
-                var selectedItems = oTable.getSelectedItems();
+                var selectedItems = this.oTable.getSelectedItems();
 
                 //Revert if no rows are selected
                 if (selectedItems.length === 0) {
@@ -168,9 +169,8 @@ sap.ui.define([
 
             // Event handler for resetting changes on UI
             onReset: function () {
-                var oTable = this.getView().byId("idResponsiveTable");
-                var oTableModel = oTable.getModel();
-                var aItems = oTable.getItems();
+                var oTableModel = this.oTable.getModel();
+                var aItems = this.oTable.getItems();
 
                 //Remove all icons on Status column
                 aItems.forEach(function (item) {
@@ -178,22 +178,26 @@ sap.ui.define([
                 });
 
                 //Remove Select Icon (Tick Icons) by Users on UI
-                oTable.removeSelections();
+                this.oTable.removeSelections();
 
                 //Reset Updated Status Tag
                 this.getView().byId("idGenericTag").setStatus("Success")
                 this.getView().byId("idGenericTag").setText("Not Update")
 
-                //Empty the temporary add-Items array
-                if (this.addItems && this.addItems.length > 0) {
-                    this.addItems.forEach(function (item) {
-                        oTable.removeItem(item);
+                let that = this;
+
+                //Remove add items on UI
+                if (that.addItems && that.addItems.length > 0) {
+                    that.addItems.forEach(function (item) {
+                        that.oTable.removeItem(item);
                     });
-                    this.addItems = [];
                 }
 
+                //Empty the temporary add-Items array
+                that.addItems = [];
+
                 //Empty the temporary deleted-item-ids array
-                this.deletedIDList = [];
+                that.deletedIDList = [];
 
                 //Reset all data changed by users on UI
                 oTableModel.resetChanges();
@@ -215,14 +219,13 @@ sap.ui.define([
                 }
 
                 //Showing edit icon status when row value changes
-                var oTable = this.getView().byId("idResponsiveTable");
-                oTable.getItems()[oChangedRowId].getCells()[0].setSrc("sap-icon://edit");
-                oTable.getItems()[oChangedRowId].getCells()[0].setColor("blue");
+                this.oTable.getItems()[oChangedRowId].getCells()[0].setSrc("sap-icon://edit");
+                this.oTable.getItems()[oChangedRowId].getCells()[0].setColor("blue");
             },
 
             //Function for changing Generic Tag between "Not Updated" and Updated
             onGenericChange: function () {
-                var oGenericTag = this.getView().byId("idGenericTag");
+                var oGenericTag = this.oView.byId("idGenericTag");
                 oGenericTag.setText("Updated");
                 oGenericTag.setStatus("Warning");
             },
@@ -245,7 +248,7 @@ sap.ui.define([
                             TaxTarifCode: Number(aNew[8]._lastValue),
                             MeasureUnit: aNew[9]._lastValue
                         };
-                        var oModel = this.getView().byId("idSmartTable").getModel();
+                        var oModel = this.oSmartTable.getModel();
                         oModel.setUseBatch(false);
                         //Push this record to OData
                         oModel.create("/ProductSet", newRecord);
@@ -255,7 +258,7 @@ sap.ui.define([
 
             //Function: Deleting the Selected Rows to OData
             onDeleteSend: function () {
-                var oModel = this.getView().byId("idSmartTable").getModel();
+                var oModel = this.oSmartTable.getModel();
                 //Checking whether User selects any Products for deleting on UI
                 if (this.deletedIDList && this.deletedIDList.length > 0) {
                     this.deletedIDList.forEach(function (productID) {
@@ -276,7 +279,7 @@ sap.ui.define([
 
             //Event handler for sending Adding, Deleting, Updating to OData
             onSend: function () {
-                var oModel = this.getView().byId("idSmartTable").getModel();
+                var oModel = this.oSmartTable.getModel();
                 oModel.setUseBatch(false);
 
                 //Function: Send the Updating Rows to OData
